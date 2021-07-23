@@ -4,7 +4,7 @@ import axios from 'axios'
 
 Vue.config.productionTip = false
 window.axios = require('axios')
-axios.defaults.baseURL = 'https://api.openbrewerydb.org'
+axios.defaults.baseURL = 'https://api.openbrewerydb.org/breweries?'
 
 new Vue({
   render: (h) => h(App),

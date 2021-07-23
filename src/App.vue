@@ -44,10 +44,12 @@ export default {
   components: {},
   async created() {
     try {
-      const cityRes = await axios.get('https://api.openbrewerydb.org/breweries?/by_city')
-      const typeRes = await axios.get('https://api.openbrewerydb.org/breweries?/by_type')
+      const cityRes = await axios.get('/by_city')
+      const typeRes = await axios.get('/by_type')
       this.cities = cityRes.data
       this.types = typeRes.data
+      console.log(`this.cities → `, this.cities)
+      console.log(`this.types → `, this.types)
     } catch (e) {
       console.error(error)
     }
