@@ -24,7 +24,7 @@
         </li>
       </ul> -->
       <ul>
-        <li v-for="cities in filteredCities">{{ city }}</li>
+        <li v-for="cities in selectedCities">{{ city }}</li>
       </ul>
     </form>
   </div>
@@ -57,15 +57,15 @@ export default {
   computed: {
     selectedCities() {
       console.log(`selectedCity → `, this.selectedCity)
-      return this.cities.filter((city) => {
-        city.toLowerCase().startsWith(this.selectedCity.toLowerCase())
+      this.cities.filter((city) => {
+        return city.toLowerCase().startsWith(this.selectedCity.toLowerCase())
       })
     },
     selectedTypes() {
       console.log(`selectedType → `, this.selectedType)
-      return (this.filteredTypes = this.types.filter((city) => {
-        city.toLowerCase().startsWith(this.selectedType.toLowerCase())
-      }))
+      this.filteredTypes = this.types.filter((type) => {
+        return type.toLowerCase().startsWith(this.selectedType.toLowerCase())
+      })
     },
   },
   methods: {
