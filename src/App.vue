@@ -1,30 +1,30 @@
 <template>
   <div id="app">
     <h1>Breweries List</h1>
-    <form class="_form">
+    <form class="_form" @submit.prevent="submit">
       City
       <select name="cities" id="_cities" v-model="selectedCity">
-        <option value="all">All</option>
-        <option value="cityNames" v-for="city in cities" :key="city.id">{{ city.city }}</option>
+        <option value="">All</option>
+        <option value="milwaukee">Milwaukee</option>
       </select>
-      <div>{{ selectedCity }}</div>
+      <!-- <div>{{ selectedCity }}</div> -->
       Type
       <select name="types" id="_types" v-model="selectedType">
-        <option value="all">All</option>
-        <option value="types" v-for="type in types" :key="type.id">{{ type.brewery_type }}</option>
+        <option value="">All</option>
+        <option value="micro">Micro</option>
+        <!-- <option value="micro">Micro</option>
+        <option value="micro">Micro</option>
+        <option value="micro">Micro</option>
+        <option value="micro">Micro</option> -->
       </select>
-      <div>{{ selectedType }}</div>
-      <button value="save" class="_btn" alt="submit form" @click="submit">Submit</button>
-      <!-- <ul class="_selected">
-        <li v-for="city in selectedCities">
+      <!-- <div>{{ selectedType }}</div> -->
+      <button type="submit" class="_btn" alt="submit form">Submit</button>
+      <ul class="_selected">
+        <li v-for="city in cities">
           <span>{{ city.city }}</span>
+          <br />
+          <span>{{ city.brewery_type }}</span>
         </li>
-        <li v-for="type in selectedTypes">
-          <span>{{ type.type }}</span>
-        </li>
-      </ul> -->
-      <ul>
-        <li v-for="cities in selectedCities">{{ city }}</li>
       </ul>
     </form>
   </div>
@@ -36,7 +36,6 @@ export default {
   data() {
     return {
       cities: [],
-      types: [],
       selectedCity: '',
       selectedType: '',
     }
@@ -44,33 +43,42 @@ export default {
   components: {},
   async created() {
     try {
-      const cityRes = await axios.get('/by_city')
-      const typeRes = await axios.get('/by_type')
-      this.cities = cityRes.data
-      this.types = typeRes.data
-      console.log(`this.cities → `, this.cities)
-      console.log(`this.types → `, this.types)
+      this.submit()
     } catch (e) {
       console.error(error)
     }
   },
-  computed: {
-    selectedCities() {
-      console.log(`selectedCity → `, this.selectedCity)
-      this.cities.filter((city) => {
-        return city.toLowerCase().startsWith(this.selectedCity.toLowerCase())
-      })
-    },
-    selectedTypes() {
-      console.log(`selectedType → `, this.selectedType)
-      this.filteredTypes = this.types.filter((type) => {
-        return type.toLowerCase().startsWith(this.selectedType.toLowerCase())
-      })
-    },
-  },
+  // computed: {
+  //   selectedCities() {
+  //     console.log(`selectedCity → `, this.selectedCity)
+  //     return this.cities.filter((city) => {
+  //       city.toLowerCase().startsWith(this.selectedCity.toLowerCase())
+  //     })
+  //   },
+  //   selectedTypes() {
+  //     console.log(`selectedType → `, this.selectedType)
+  //     return (this.filteredTypes = this.types.filter((type) => {
+  //       type.toLowerCase().startsWith(this.selectedType.toLowerCase())
+  //     }))
+  //   },
+  // },
+  //dynamically creating a new queury to the server. Theres no way to get all of the city names
+  // add pagination****** (make it set a variable that gets set as a query param) -- page
+  // The offset or page of breweries to return.
   methods: {
-    submit() {
-      console.log(1)
+    async submit() {
+      let per_page = 50
+      let params = { per_page }
+      if (this.selectedCity !== '') {
+        params.by_city = this.selectedCity
+      }
+      if (this.selectedType !== '') {
+        params.by_type = this.selectedType
+      }
+      const res = await axios.get('', { params })
+      // const typeRes = await axios.get('/by_type')
+      this.cities = res.data
+      this.types = res.data
     },
   },
 }
