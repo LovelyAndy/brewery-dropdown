@@ -77,7 +77,7 @@ export default {
       // breweries: [],
       selectedCity: '',
       selectedType: '',
-      currentPage: 1,
+      currentPage: 0,
       perPage: 10,
       visibleBreweries: [],
       listShown: true,
