@@ -23,7 +23,7 @@
         <!-- <option value="closed">Closed</option> -->
       </select>
       <button type="submit" class="_btn" alt="submit form">Submit</button>
-      <ul v-show="listShown" class="_selected">
+      <ul class="_selected">
         <li
           class="_brewery"
           v-for="brewery in visibleBreweries"
@@ -53,13 +53,15 @@
           </div>
           <div v-if="brewery.website_url">
             <div class="_title">Website:</div>
-            <div class="_info">{{ brewery.website_url }}</div>
+            <a :href="brewery.website_url" class="_info" target="_blank" rel="noopener">{{
+              brewery.website_url
+            }}</a>
           </div>
         </li>
       </ul>
     </form>
     <Pagination
-      v-if="listShown"
+      v-if="visibleBreweries.length"
       :visibleBreweries="visibleBreweries"
       :currentPage="currentPage"
       :perPage="perPage"
@@ -70,30 +72,20 @@
 
 <script>
 import Pagination from './components/Pagination.vue'
+import { BASE_URL } from './config.js'
+
 export default {
   name: 'App',
   data() {
     return {
-      // breweries: [],
       selectedCity: '',
       selectedType: '',
-      currentPage: 0,
+      currentPage: 1,
       perPage: 10,
       visibleBreweries: [],
-      listShown: true,
     }
   },
   components: { Pagination },
-  beforeMount() {
-    this.updateVisibleBreweries()
-  },
-  async created() {
-    try {
-      this.submit()
-    } catch (e) {
-      console.error(error)
-    }
-  },
   //dynamically creating a new queury to the server, becasuse there's no way to get ALL of the city names since the API only allows up to 50 in one call. So I limited it to a few breweries.
   // add pagination****** (make it set a variable that gets set as a query param) -- page
   // The offset or page of breweries to return.
@@ -108,27 +100,17 @@ export default {
       if (this.selectedType !== '') {
         params.by_type = this.selectedType
       }
-      const res = await axios.get('', { params })
+      const res = await axios.get(BASE_URL, { params })
       this.visibleBreweries = res.data
       console.log(`this.visibleBreweries → `, this.visibleBreweries)
       console.log(`this.currentPage → `, this.currentPage)
       this.types = res.data
-      this.listShown = !this.listShown
       console.log(`clicked → `, 'clicked')
+      // if result > 10 and are no more breweries
     },
     updatePage(pageNum) {
       this.currentPage = pageNum
-      this.updateVisibleBreweries()
-    },
-    updateVisibleBreweries() {
-      this.visibleBreweries.slice(
-        this.currentPage * this.perPage,
-        this.currentPage * this.perPage + this.perPage
-      )
-      // if we have no visible breweries, go back a page
-      if ((this.visibleBreweries.length = 0 && this.currentPage > 0)) {
-        this.updatePage(this.currentPage - 1)
-      }
+      this.submit()
     },
   },
 }
@@ -147,6 +129,9 @@ export default {
   display: flex
   flex-direction: column
   list-style-type: none
+  border: solid 2px black
+  border-radius: 1em
+  padding: 1em
   margin-bottom: 2em
 ._title
   font-weight: bold
