@@ -45,6 +45,6 @@ Use the following [api](https://www.openbrewerydb.org/documentation/01-listbrewe
 - street
 - phone
 - website_url (if available)
--
+- BONUS: Add pagination
 
 To parse the phone number use [this](https://stackoverflow.com/questions/8358084/regular-expression-to-reformat-a-us-phone-number-in-javascript) stackoverflow solution.
